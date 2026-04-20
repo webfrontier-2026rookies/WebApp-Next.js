@@ -23,6 +23,16 @@ export default function Home() {
     multiple: false,
   });
 
+  const handleRemove = () => {
+    // 1. 状態を null に戻す（これで表示が切り替わる）
+    setPreview(null);
+    
+    // 2. (重要) ブラウザのメモリを解放する
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    };
+
   return (
     <div className="mt-20 flex flex-col items-center justify-center">
       <div className="relative w-full max-w-2xl">
@@ -49,8 +59,10 @@ export default function Home() {
         </div>
 
         <div className="flex gap-20 mt-4 justify-center items-center">
-        <button className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">画像を削除</button>
-        <button className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">画像を送信</button>
+        <button onClick={handleRemove} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">画像を削除</button>
+        <button disabled={!preview} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
+          {preview ? "画像をマスクする" : "画像を送信"}
+        </button>
         </div>
       </div>
     </div>
