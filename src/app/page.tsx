@@ -39,10 +39,9 @@ export default function Home() {
           `}
         >
           {preview ? (
-            /* 画像があれば表示 */
+            //画像があれば表示
             <img src={preview} alt="Preview" className="w-full h-full object-contain p-4" />
           ) : (
-            /* なければテキストを表示 */
             <div className="text-center">
               <p className="font-medium">ここに画像をドラッグ・アンド・ドロップしてください。</p>
             </div>
