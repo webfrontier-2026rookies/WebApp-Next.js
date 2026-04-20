@@ -17,10 +17,11 @@ export default function Home() {
   }, []);
 
   // 3. Dropzoneの設定
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: { "image/*": [] }, 
     multiple: false,
+    noClick: true,
   });
 
   const handleRemove = () => {
@@ -48,6 +49,8 @@ export default function Home() {
             ${isDragActive ? "border-blue-500 bg-blue-50" : "border-black bg-white"}
           `}
         >
+          <input {...getInputProps()} />//ファイル選択のinput要素を配置
+
           {preview ? (
             //画像があれば表示
             <img src={preview} alt="Preview" className="w-full h-full object-contain p-4" />
@@ -60,7 +63,7 @@ export default function Home() {
 
         <div className="flex gap-20 mt-4 justify-center items-center">
         <button onClick={handleRemove} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">画像を削除</button>
-        <button disabled={!preview} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
+        <button  onClick={!preview ? open : undefined} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
           {preview ? "画像をマスクする" : "画像を送信"}
         </button>
         </div>
