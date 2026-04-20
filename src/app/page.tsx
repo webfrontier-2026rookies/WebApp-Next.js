@@ -52,7 +52,7 @@ export default function Home() {
         <div className="flex gap-20 mt-4 justify-center items-center">
         <button className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">画像を削除</button>
         <button className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">画像を送信</button>
-      </div>
+        </div>
       </div>
     </div>
   );
