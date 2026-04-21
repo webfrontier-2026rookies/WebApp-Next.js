@@ -49,8 +49,8 @@ export default function Home() {
             ${isDragActive ? "border-blue-500 bg-blue-50" : "border-black bg-white"}
           `}
         >
-          <input {...getInputProps()} />//ファイル選択のinput要素を配置
-
+          {/* ファイル選択のinput要素を配置 */}
+          <input {...getInputProps()} />
           {preview ? (
             //画像があれば表示
             <img src={preview} alt="Preview" className="w-full h-full object-contain p-4" />
