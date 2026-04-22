@@ -10,6 +10,7 @@ export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [faceData, setFaceData] = useState<any>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [ismasked,setIsMasked] = useState(false);
 
 
   const onDrop = useCallback(async(acceptedFiles: File[]) => {
@@ -71,6 +72,8 @@ export default function Home() {
         }
       });
       alert("マスクを描画しました！");
+
+      setIsMasked(true);
     };
   };
 
@@ -84,6 +87,7 @@ export default function Home() {
   const handleRemove = () => {
     setPreview(null);
     setSelectedFile(null);
+    setIsMasked(false);
     if (preview) {
       URL.revokeObjectURL(preview);
     }
@@ -111,16 +115,25 @@ export default function Home() {
               <p className="font-medium">ここに画像をドラッグ・アンド・ドロップしてください。</p>
             </div>
           )}
-
         </div>
 
+        {/* ボタンの出し分けエリア */}
         <div className="flex gap-20 mt-4 justify-center items-center">
-          <button onClick={handleRemove} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
-            画像を削除
-          </button>
-          <button onClick={preview ? handleMask : open} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
-            {preview ? "画像をマスクする" : "画像を選択"}
-          </button>
+          {ismasked ? ( 
+            //マスク完了後
+            <button onClick={handleRemove} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-15 py-2" type="button">
+              戻る
+            </button>
+          ) : (
+            <>
+              <button onClick={handleRemove} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
+                画像を削除
+              </button>
+              <button onClick={preview ? handleMask : open} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
+                {preview ? "画像をマスクする" : "画像を選択"}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
