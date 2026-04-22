@@ -2,19 +2,24 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useRef } from 'react';
+import { callFaceAPI } from "../api"; 
 
 export default function Home() {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [faceData, setFaceData] = useState<any>(null);
 
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback(async(acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
       const fileUrl = URL.createObjectURL(file);
       setPreview(fileUrl);
       setSelectedFile(file); // ★ ファイルを保持
+
+      // APIを呼び出す
+      const result = await callFaceAPI(file);
+      setFaceData(result);
     }
   }, []); 
 
