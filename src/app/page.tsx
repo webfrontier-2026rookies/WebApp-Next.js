@@ -117,7 +117,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* ボタンの出し分けエリア */}
         <div className="flex gap-20 mt-4 justify-center items-center">
           {ismasked ? ( 
             //マスク完了後
