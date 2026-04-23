@@ -62,6 +62,14 @@ export default function Home() {
     maskedImage.onload = () => {
       faces.forEach((face: any) => {
         const { x_min, y_min, x_max, y_max } = face.box;
+        const prob = face.box.probability;
+
+        console.log("AIの自信度:", prob);
+
+        if (prob < 0.8) {
+          console.warn("スコアが低いのでスキップします:", prob);
+          return; 
+      }
 
         //幅と高さを計算
         const w = x_max - x_min;
