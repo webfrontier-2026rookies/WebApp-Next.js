@@ -20,8 +20,4 @@ export async function callFaceAPI(file: File) {
     alert(errorData.error);
     throw new Error(errorData.error);
 }
-    const data = await response.json();
-    logger.info("APIから届いたデータ全体:", data);
-    logger.info("APIの結果:", data);
-    return data;
 }

@@ -49,10 +49,9 @@ export default function Home() {
       return;
     }
 
-    const faces = faceData.faces;
+    const faces = faceData.result;
 
     if (!Array.isArray(faces) || faces.length === 0) {
-      logger.error("顔リストが見つからない、または配列ではありません:", faceData);
       alert("顔が見つかりませんでした");
       return;
     }
