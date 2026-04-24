@@ -4,9 +4,10 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { callFaceAPI } from "../api"; 
 import { useRef } from "react";
+import { logger } from "../utils/logger";
 
 export default function Home() {
-  const [preview, setPreview] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [faceData, setFaceData] = useState<any>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,7 +18,7 @@ export default function Home() {
     const file = acceptedFiles[0];
     if (file) {
       const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
+      setImageUrl(fileUrl);
       setSelectedFile(file); //ファイルを保持
 
       const img = new Image();
@@ -40,14 +41,14 @@ export default function Home() {
 
   const handleMask = async () => {
     if (!selectedFile || !faceData) {
-      console.error("画像を選択するか、APIの結果を待ってください");
+      logger.error("画像を選択するか、APIの結果を待ってください");
       return;
     }
 
     const faces = faceData.result;
 
     if (!Array.isArray(faces) || faces.length === 0) {
-      console.error("顔リストが見つからない、または配列ではありません:", faceData);
+      logger.error("顔リストが見つからない、または配列ではありません:", faceData);
       alert("顔が見つかりませんでした");
       return;
     }
@@ -64,10 +65,10 @@ export default function Home() {
         const { x_min, y_min, x_max, y_max } = face.box;
         const prob = face.box.probability;
 
-        console.log("AIの自信度:", prob);
+        logger.info("AIの自信度:", prob);
 
         if (prob < 0.8) {
-          console.warn("スコアが低いのでスキップします:", prob);
+          logger.warn("人間の画像ではありません:", prob);
           return; 
       }
 
@@ -79,8 +80,7 @@ export default function Home() {
           ctx.drawImage(maskedImage, x_min, y_min, w, h);
         }
       });
-      alert("マスクを描画しました！");
-
+      logger.info("マスクを描画しました！");
       setIsMasked(true);
     };
   };
@@ -93,11 +93,11 @@ export default function Home() {
   });
   
   const handleRemove = () => {
-    setPreview(null);
+    setImageUrl(null);
     setSelectedFile(null);
     setIsMasked(false);
-    if (preview) {
-      URL.revokeObjectURL(preview);
+    if (imageUrl) {
+      URL.revokeObjectURL(imageUrl);
     }
   };
 
@@ -116,7 +116,7 @@ export default function Home() {
           `}
         >
           <input {...getInputProps()} />
-          {preview ? (
+          {imageUrl ? (
             <canvas ref={canvasRef} className="w-full h-full object-contain p-4" />
           ) : (
             <div className="text-center">
@@ -136,8 +136,8 @@ export default function Home() {
               <button onClick={handleRemove} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
                 画像を削除
               </button>
-              <button onClick={preview ? handleMask : open} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
-                {preview ? "画像をマスクする" : "画像を選択"}
+              <button onClick={imageUrl ? handleMask : open} className="text-white bg-blue-500 hover:bg-blue-600 rounded px-4 py-2" type="button">
+                {imageUrl ? "画像をマスクする" : "画像を選択"}
               </button>
             </>
           )}
