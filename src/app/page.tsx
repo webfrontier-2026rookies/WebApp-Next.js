@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { callFaceAPI } from "../api"; 
 import { useRef } from "react";
-import { logger } from "../utils/logger";
+import { logger } from "./utils/logger";
 
 export default function Home() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -34,8 +34,12 @@ export default function Home() {
       img.src = fileUrl;
 
       // APIを呼び出す
-      const result = await callFaceAPI(file);
-      setFaceData(result);//apiの結果を保存
+      try {
+        const result = await callFaceAPI(file);
+        setFaceData(result);
+      } catch (error) {
+        setFaceData(null);
+      }
     }
   }, []); 
 
@@ -45,7 +49,7 @@ export default function Home() {
       return;
     }
 
-    const faces = faceData.result;
+    const faces = faceData.faces;
 
     if (!Array.isArray(faces) || faces.length === 0) {
       logger.error("顔リストが見つからない、または配列ではありません:", faceData);
