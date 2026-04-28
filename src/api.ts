@@ -17,7 +17,7 @@ export async function callFaceAPI(file: File) {
 
     if (!response.ok) {
     const errorData = await response.json();
-    alert(errorData.error);
+    logger.error(errorData.error);
     throw new Error(errorData.error);
 }
 }

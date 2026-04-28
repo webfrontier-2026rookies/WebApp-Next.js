@@ -52,7 +52,7 @@ export default function Home() {
     const faces = faceData.result;
 
     if (!Array.isArray(faces) || faces.length === 0) {
-      alert("顔が見つかりませんでした");
+      logger.error("顔が見つかりませんでした");
       return;
     }
 
