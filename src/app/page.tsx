@@ -14,34 +14,47 @@ export default function Home() {
   const [ismasked,setIsMasked] = useState(false);
 
 
-  const onDrop = useCallback(async(acceptedFiles: File[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
-    if (file) {
-      const fileUrl = URL.createObjectURL(file);
-      setImageUrl(fileUrl);
-      setSelectedFile(file); //ファイルを保持
+    if (!file) return;
 
-      const img = new Image();
-      img.onload = () => {
-        if (canvasRef.current) {
-          const canvas = canvasRef.current;
-          const ctx = canvas.getContext("2d");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx?.drawImage(img, 0, 0);
-        }
-      };
-      img.src = fileUrl;
+    // 1. 画像URLの作成と状態保存
+    const fileUrl = URL.createObjectURL(file);
+    setImageUrl(fileUrl);
+    setSelectedFile(file);
+    setFaceData(null); // 前のデータをクリア
 
-      // APIを呼び出す
-      try {
-        const result = await callFaceAPI(file);
-        setFaceData(result);
-      } catch (error) {
-        setFaceData(null);
+    // 2. キャンバスへの描画処理
+    const img = new Image();
+    img.onload = () => {
+      if (canvasRef.current) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0);
       }
+    };
+    img.src = fileUrl;
+
+    // 3. 【ここがポイント】API呼び出しを img.onload の「外」に出す
+    // これで、画像の読み込みに関係なく、ドロップしたら即APIを叩きに行きます
+    try {
+      logger.info("API呼び出し開始...");
+      const result = await callFaceAPI(file);
+      
+      console.log("★APIから返ってきた生データ:", result); // これがコンソールに出るかチェック！
+      
+      if (result) {
+        setFaceData(result);
+        logger.info("API結果の保存に成功しました");
+      } else {
+        logger.error("APIの戻り値が空(null/undefined)です");
+      }
+    } catch (error: any) {
+      logger.error("API呼び出しに失敗:", error.message);
     }
-  }, []); 
+  }, []);
 
   const handleMask = async () => {
     if (!selectedFile || !faceData) {
