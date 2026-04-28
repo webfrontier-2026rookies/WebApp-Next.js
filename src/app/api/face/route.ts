@@ -7,7 +7,7 @@ const Key = process.env.FACE_API_KEY;
 if (!Url || !Key) {
   const msg = "環境変数が設定されていません。";
   logger.error(msg);
-  throw new Error(msg); // これがあるから、下の代入が「安全」になります
+  throw new Error(msg);
 }
 
 const API_URL = Url;
